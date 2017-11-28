@@ -216,3 +216,11 @@ void serialEvent(Serial myPort) {
     }
   }
 }
+
+void keyReleased(){
+  if(key == 's'){
+    saveFrame("caleiduino-####.png");
+ }
+
+
+}
