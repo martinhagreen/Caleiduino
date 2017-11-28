@@ -1,9 +1,6 @@
-
 import processing.serial.*;
 
-int x;       
-int y;     
-int z;  
+int x, y, z;
 String colorIn;
 Serial myPort;
 int colorinchi;
@@ -40,6 +37,7 @@ void setup() {
   myPort = new Serial(this, "/dev/tty.wchusbserial1450", 9600);
   myPort.bufferUntil('\n');
   background(0);
+  //screen source dimensions
   sourceWidth = 160;
   sourceHeight = 128;
   //A rectangle able to have an equilateral triangle inscribed in it (where h = sqrt(3)/2 * w)
@@ -55,7 +53,7 @@ void setup() {
 void draw() {
   background(0);
   
-   initMasks();
+    initMasks();
     generateSourceImages();
     updateMasks();
     for(int i = -1; i < cols; i++) {
@@ -63,6 +61,20 @@ void draw() {
         drawHexagonPattern(i * cellSpace, (j * blockHeight * 2) + ((i%2 == 0) ? blockHeight : 0));
       }
     }
+  
+    
+   // Comment this block to hide triangle info "panel"
+   fill(0);
+   noStroke();
+   rect(0,0, image.width * 2, image.height);
+   image(image, 0, 0);
+   pushMatrix();
+    translate(initXPos, initYPos);
+    stroke(0);
+    noFill();
+    triangle(0, blockHeight, blockWidth/2, 0, blockWidth, blockHeight);
+   popMatrix();
+   image(upImg, 200, initYPos);
 }
 
 void initCellImages() {
@@ -91,23 +103,30 @@ void generateSourceImages() {
      image.translate(159, 0);
      image.rotate(-1.5708 );
      image.scale(-1, -1);
-   //image.translate(50,0);
-   // CALEIDUINO
-     image.triangle(x,y,z, x, 0, 0);
+      //HERE is where we draw our graphics according to Arduino code.
+      //
+     /*
+     int colorinchis = random(316331);
+     tft.fillTriangle(valX, valY, valZ, valX, 0, 0, colorinchis);
+     tft.drawLine(valX, valY, valZ, valY + random(50), 0xFFFF);
+     */
+     //=======
+     image.triangle(x, y, z, x, 0, 0);
      image.stroke(255);
      image.line(x, y, z, y + random(50));
+     //======
      image.popMatrix();
   image.endDraw();
   }
-  
+  //clear drawing on stand-by mode 
   if(active == 0){
       image.beginDraw(); 
       image.clear();
       image.endDraw(); 
   }
 
-   initXPos = 30;
-   initYPos = 20;
+  initXPos = 30;
+  initYPos = 20;
   int count = 0;
   
   for(int j = 0; j < blockHeight; j++) {
@@ -133,16 +152,13 @@ void generateSourceImages() {
 void updateMasks() { 
   upImg.mask(upImgMask);
   downImg.mask(downImgMask);
-  
-  //  image(image, 0, 0);
-  
+    //image(image, 0, 0);
     pushMatrix();
     translate(initXPos, initYPos);
-    stroke(0);
-    noFill();
-    triangle(0, blockHeight, blockWidth/2, 0, blockWidth, blockHeight);
+      stroke(0);
+      noFill();
+      triangle(0, blockHeight, blockWidth/2, 0, blockWidth, blockHeight);
     popMatrix();
-    
     //image(upImgMask, 400, 0);
     //image(upImg, 700, 0);
 }
@@ -217,10 +233,9 @@ void serialEvent(Serial myPort) {
   }
 }
 
+//save frame with keyboard
 void keyReleased(){
   if(key == 's'){
     saveFrame("caleiduino-####.png");
  }
-
-
 }

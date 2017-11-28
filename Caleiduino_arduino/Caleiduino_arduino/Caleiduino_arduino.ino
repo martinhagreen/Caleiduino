@@ -19,9 +19,8 @@
 
 ***************************************************************/
 
-// Conexiones a la pantalla TFT
-// #define sclk 13 / Usa esta linea si prefieres Opcion 1 (lento)
-// #define mosi 11 / Usa esta linea si prefieres Opcion 1 (lento)
+//TFT 
+
 #define cs 8
 #define dc 9
 #define rst 10 // Se puede conectar tambien al PIN RESET 
@@ -186,26 +185,12 @@ if(staticX == true && staticY == true && staticZ == true){
 }
 
 
-
  // tft.fillRoundRect(valX, valY, random(10, 80), random(10, 80), 5, random(316331));
  // tft.drawCircle(valX, valZ, valY / 3, random(316331));
  // tft.fillCircle(valX, valY, random(30), random(316331));
  // tft.drawFastVLine(valY, 0, tft.height(), random(316331));
  // tft.drawLine(valX, valY, valZ, valY + random(50), random(316331));
  // tft.drawRect(valY, random(128), random(60), random(60), random(316331));
-
-  // El tiempo de refresco de los graficos nunca debe ser = 0, de lo
-  // contrario la pantalla TFT se vuelve loca:
-
-/*
-  if (valX < 1) {
-    valX = 1;
-  }
-*/
-  // El delay() permite al loop() respirar y aqui lo define el valor
-  // analogico del PIN A0, con lo que controlamos la velocidad de
-  // refresco de los graficos segun la posicion del CALEIDUINO:
-
   delay(50);
 }
 
