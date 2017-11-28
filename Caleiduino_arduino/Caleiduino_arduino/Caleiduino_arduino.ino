@@ -130,17 +130,7 @@ void loop() {
   // los sonidos del piezoelectrico para que sean mas locos:
 
   //tone(4, sound, valZ / random(10));
-  
-  //Uncomment this block to check static position. CALIBRATION
-  /*
-  Serial.print(sensorValue1);
-  Serial.print(",");
-  Serial.print(sensorValue2);
-  Serial.print(",");
-  Serial.print(sensorValue3);
-  Serial.println(",");
-  */
-
+ 
   //colorinchi = "00FFE0";
   //color = int(colorinchi);
 
@@ -162,19 +152,19 @@ void loop() {
  // Serial.println(sound);
 
 //Check if caleiduino is in vertical & static position
-if(sensorValue1 == 294 || sensorValue1 == 295){
+if(valX == 33 || valX == 34 || valX == 35){
      staticX = true;
 } else {
      staticX = false;
 }
 
-if(sensorValue2 == 360 || sensorValue2 == 361){
+if(valY == 80 || valY == 81){
      staticY = true;
 } else {
     staticY = false;
 }
 
-if(sensorValue2 == 360 || sensorValue2 == 361){
+if(valZ== 80 || valZ == 81){
      staticZ = true;
 } else {
     staticZ = false;
