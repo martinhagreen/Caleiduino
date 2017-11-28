@@ -5,7 +5,6 @@ String colorIn;
 Serial myPort;
 int colorinchi;
 PGraphics maskImage;
-
 PGraphics image; 
 
 PImage upImg;
@@ -35,6 +34,7 @@ void setup() {
   size(1920,1080);
   //this line prints the devices connected to the computer
   println(Serial.list());
+  frameRate(12);
   //replace the port String with the port where your Arduino is connected
   myPort = new Serial(this, "/dev/tty.wchusbserial1450", 9600);
   myPort.bufferUntil('\n');
@@ -58,6 +58,8 @@ void draw() {
     initMasks();
     generateSourceImages();
     updateMasks();
+   
+    
     for(int i = -1; i < cols; i++) {
       for(int j = -1; j < rows; j++) {
         drawHexagonPattern(i * cellSpace, (j * blockHeight * 2) + ((i%2 == 0) ? blockHeight : 0));
@@ -102,9 +104,10 @@ void generateSourceImages() {
      image.noStroke();
      image.fill(red, green, blue); 
      image.pushMatrix();
-     image.translate(159, 0);
-     image.rotate(-1.5708);
+     image.translate(160, 128);
+     //image.rotate(-1.5708);
      image.scale(-1, -1);
+     //image.scale(1,1);
       //HERE is where we draw our graphics according to Arduino code.
       //
      /*
@@ -165,6 +168,7 @@ void updateMasks() {
     //image(upImg, 700, 0);
 }
 
+
 void drawHexagonPattern(int offsetX, int offsetY) {
   PImage img;
   pushMatrix();
@@ -216,22 +220,6 @@ void initMasks() {
 }
 
 
-void serialEvent(Serial myPort) {
-  String inString = myPort.readStringUntil('\n');
-  if (inString != null) {
-    inString = trim(inString);
-    int[] coordinates = int(split(inString, ","));
-    if (coordinates.length >=7) {
-      x = int(coordinates[0]);
-      y = int(coordinates[1]);
-      z = int(coordinates[2]);
-      red = coordinates[3];
-      green = coordinates[4];
-      blue = coordinates[5];
-      active = int(coordinates[6]);
-    }
-  }
-}
 
 //save frame with keyboard
 void keyReleased(){
