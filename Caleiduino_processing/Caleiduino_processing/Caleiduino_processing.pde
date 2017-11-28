@@ -36,20 +36,17 @@ void setup() {
   size(1920,1080);
   //this line prints the devices connected to the computer
   println(Serial.list());
-  //replace the port with the port where your Arduino is connected
-  myPort = new Serial(this, "/dev/tty.wchusbserial1410", 9600);
+  //replace the port String with the port where your Arduino is connected
+  myPort = new Serial(this, "/dev/tty.wchusbserial1450", 9600);
   myPort.bufferUntil('\n');
   background(0);
-
   sourceWidth = 160;
   sourceHeight = 128;
   //A rectangle able to have an equilateral triangle inscribed in it (where h = sqrt(3)/2 * w)
   blockHeight = 73;
   blockWidth = 84;
- 
-  
   totalBlockPixels = blockWidth * blockHeight;
- 
+
   initCellImages();
   initCellSpacing();
   image = createGraphics(sourceWidth, sourceHeight);
@@ -58,28 +55,14 @@ void setup() {
 void draw() {
   background(0);
   
-  if(active == 1){
-    initMasks();
+   initMasks();
     generateSourceImages();
     updateMasks();
-
- 
-  pushMatrix();
-  translate(0, 480);
-  for(int i = -1; i < cols; i++) {
-    for(int j = -1; j < rows; j++) {
-      drawHexagonPattern(i * cellSpace, (j * blockHeight * 2) + ((i%2 == 0) ? blockHeight : 0));
+    for(int i = -1; i < cols; i++) {
+      for(int j = -1; j < rows; j++) {
+        drawHexagonPattern(i * cellSpace, (j * blockHeight * 2) + ((i%2 == 0) ? blockHeight : 0));
+      }
     }
-  }
-  
-  popMatrix();
-  
-  } else {
-    fill(0, 10);
-    rect(0, 0, width, height);
-  
-  }
-  
 }
 
 void initCellImages() {
@@ -100,21 +83,28 @@ void initCellSpacing() {
 }
 
 void generateSourceImages() {
- image.beginDraw();
-   //image.background(255);
-   image.noStroke();
-   image.fill(random(255), random(255), random(255)); 
-   image.pushMatrix();
-   image.translate(159, 0);
-   image.rotate(-1.5708 );
-   image.scale(-1, -1);
+  if(active == 1){
+     image.beginDraw();
+     image.noStroke();
+     image.fill(random(255), random(255), random(255)); 
+     image.pushMatrix();
+     image.translate(159, 0);
+     image.rotate(-1.5708 );
+     image.scale(-1, -1);
    //image.translate(50,0);
    // CALEIDUINO
-   image.triangle(x,y,z, x, 0, 0);
-   image.stroke(255);
-   image.line(x, y, z, y + random(50));
-   image.popMatrix();
- image.endDraw();
+     image.triangle(x,y,z, x, 0, 0);
+     image.stroke(255);
+     image.line(x, y, z, y + random(50));
+     image.popMatrix();
+  image.endDraw();
+  }
+  
+  if(active == 0){
+      image.beginDraw(); 
+      image.clear();
+      image.endDraw(); 
+  }
 
    initXPos = 30;
    initYPos = 20;
@@ -144,7 +134,7 @@ void updateMasks() {
   upImg.mask(upImgMask);
   downImg.mask(downImgMask);
   
-    image(image, 0, 0);
+  //  image(image, 0, 0);
   
     pushMatrix();
     translate(initXPos, initYPos);
@@ -153,13 +143,12 @@ void updateMasks() {
     triangle(0, blockHeight, blockWidth/2, 0, blockWidth, blockHeight);
     popMatrix();
     
-    image(upImgMask, 400, 0);
-    image(upImg, 700, 0);
+    //image(upImgMask, 400, 0);
+    //image(upImg, 700, 0);
 }
 
 void drawHexagonPattern(int offsetX, int offsetY) {
   PImage img;
-  
   pushMatrix();
   translate(offsetX + blockWidth, offsetY + blockHeight);
   
@@ -173,13 +162,10 @@ void drawHexagonPattern(int offsetX, int offsetY) {
     } else {
       img = upImg;
     }
-   
     image(img, drawXOffset, drawYOffset);
-    
     if(i%2==1)
       rotate(TWO_PI_OVER_3);
-  }
-  
+  } 
   popMatrix();
 }
 
@@ -217,7 +203,7 @@ void serialEvent(Serial myPort) {
   if (inString != null) {
     inString = trim(inString);
     String[] coordinates = (split(inString, ","));
-    
+
     if (coordinates.length >=5) {
       x = int(coordinates[0]);
       y = int(coordinates[1]);
@@ -225,7 +211,7 @@ void serialEvent(Serial myPort) {
       colorIn = coordinates[3];
       active = int(coordinates[4]);
      // colorIn = "FF" + colorIn;
-      //colorinchi = unhex(colorIn); 
+     //colorinchi = unhex(colorIn); 
     
     }
   }
