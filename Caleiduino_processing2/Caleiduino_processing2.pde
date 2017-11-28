@@ -54,19 +54,15 @@ void setup() {
 
 void draw() {
   background(0);
-  
     initMasks();
     generateSourceImages();
     updateMasks();
-   
     
     for(int i = -1; i < cols; i++) {
       for(int j = -1; j < rows; j++) {
         drawHexagonPattern(i * cellSpace, (j * blockHeight * 2) + ((i%2 == 0) ? blockHeight : 0));
       }
     }
-  
-    
    // Comment this block to hide triangle info "panel"
    fill(0);
    noStroke();
@@ -81,47 +77,29 @@ void draw() {
    image(upImg, 200, initYPos);
 }
 
-void initCellImages() {
-  upImg = createImage(blockWidth, blockHeight, RGB);
-  downImg = createImage(blockWidth, blockHeight, RGB);
-  
-  upImg.loadPixels();
-  downImg.loadPixels();
-  
-  upImgMask = createGraphics(blockWidth, blockHeight, JAVA2D);
-  downImgMask = createGraphics(blockWidth, blockHeight, JAVA2D);
-}
-
-void initCellSpacing() {
-  cellSpace = floor(blockWidth + (blockWidth * cos(PI/3))); 
-  cols = ceil(width / cellSpace) + 2;
-  rows = ceil(height / (blockHeight * 2)) + 2;
-}
-
 void generateSourceImages() {
   if(active == 1){
      image.beginDraw();
      image.noStroke();
      image.fill(red, green, blue); 
      image.pushMatrix();
-     image.translate(160, 128);
-     //image.rotate(-1.5708);
-     image.scale(-1, -1);
-     //image.scale(1,1);
-      //HERE is where we draw our graphics according to Arduino code.
-      //
-     /*
-     int colorinchis = random(316331);
-     tft.fillTriangle(valX, valY, valZ, valX, 0, 0, colorinchis);
-     tft.drawLine(valX, valY, valZ, valY + random(50), 0xFFFF);
-     */
-     //=======
-     image.triangle(x, y, z, x, 0, 0);
-     image.stroke(255);
-     image.line(x, y, z, y + random(50));
-     //======
+       image.translate(160, 128);
+       image.scale(-1, -1);
+    
+       //HERE is where we draw our graphics according to Arduino code.
+       /*
+          TFTscreen.fill(blue, green, red);
+          TFTscreen.triangle(valX, valY, valZ, valX, 0, 0);
+          TFTscreen.stroke(255, 255, 255);
+          TFTscreen.line(valX, valY, valZ, valY + random(50));
+       */
+       //=======
+       image.triangle(x, y, z, x, 0, 0);
+       image.stroke(255);
+       image.line(x, y, z, y + random(50));
+       //======
      image.popMatrix();
-  image.endDraw();
+     image.endDraw();
   }
   //clear drawing on stand-by mode 
   if(active == 0){
@@ -140,86 +118,14 @@ void generateSourceImages() {
       int targetY = initYPos + j;
       
       color sourcePixel = image.pixels[targetY * sourceWidth + targetX];
-       
       upImg.pixels[count] = sourcePixel;
       downImg.pixels[((blockHeight - j - 1) * blockWidth) + i] = sourcePixel;
-      
       upImg.updatePixels();
-      downImg.updatePixels();
-      
+      downImg.updatePixels(); 
       count++;
-     
     }
   }
 }
-
-
-void updateMasks() { 
-  upImg.mask(upImgMask);
-  downImg.mask(downImgMask);
-    //image(image, 0, 0);
-    pushMatrix();
-    translate(initXPos, initYPos);
-      stroke(0);
-      noFill();
-      triangle(0, blockHeight, blockWidth/2, 0, blockWidth, blockHeight);
-    popMatrix();
-    //image(upImgMask, 400, 0);
-    //image(upImg, 700, 0);
-}
-
-
-void drawHexagonPattern(int offsetX, int offsetY) {
-  PImage img;
-  pushMatrix();
-  translate(offsetX + blockWidth, offsetY + blockHeight);
-  
-  for(int i=0; i<6; i++) {        
-    int drawXOffset = -blockWidth;
-    int drawYOffset = -blockHeight;
-  
-    if(i%2==0) {
-      img = downImg;
-      drawYOffset = 0;
-    } else {
-      img = upImg;
-    }
-    image(img, drawXOffset, drawYOffset);
-    if(i%2==1)
-      rotate(TWO_PI_OVER_3);
-  } 
-  popMatrix();
-}
-
-void initMasks() {
-    upImgMask.beginDraw();
-    upImgMask.smooth();
-    upImgMask.noStroke();
-    upImgMask.background(0);
-    upImgMask.fill(255);
-    upImgMask.pushMatrix();
-    upImgMask.beginShape();
-    upImgMask.vertex(0, blockHeight);
-    upImgMask.vertex(blockWidth/2, 0);
-    upImgMask.vertex(blockWidth, blockHeight);
-    upImgMask.endShape(CLOSE);
-    upImgMask.popMatrix();
-    upImgMask.endDraw();
-    
-    downImgMask.beginDraw();
-    downImgMask.smooth();
-    downImgMask.noStroke();
-    downImgMask.background(0);
-    downImgMask.fill(255);
-    downImgMask.beginShape();
-    downImgMask.vertex(0, 0);
-    downImgMask.vertex(blockWidth/2, blockHeight);
-    downImgMask.vertex(blockWidth, 0);
-    downImgMask.endShape(CLOSE);
-    downImgMask.endDraw();
-}
-
-
 
 //save frame with keyboard
 void keyReleased(){
