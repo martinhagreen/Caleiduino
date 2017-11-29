@@ -3,9 +3,10 @@ Caleiduino visualizer
 Marta Verde. 2017
 Based on the original code by Sam Brenner 
 */
-
-
+import processing.pdf.*;
 import processing.serial.*;
+boolean record;
+
 int x, y, z;
 String colorIn;
 Serial myPort;
@@ -59,6 +60,11 @@ void setup() {
 }
 
 void draw() {
+  if(record) {
+    beginRecord(PDF, "####.pdf"); 
+  }
+  
+  
   background(0);
     initMasks();
     generateSourceImages();
@@ -69,6 +75,13 @@ void draw() {
         drawHexagonPattern(i * cellSpace, (j * blockHeight * 2) + ((i%2 == 0) ? blockHeight : 0));
       }
     }
+  
+   if(record) {
+      endRecord();
+      record = false;
+    }
+   
+   
    // Comment this block to hide triangle info "panel"
    fill(0);
    noStroke();
@@ -136,6 +149,7 @@ void generateSourceImages() {
 //save frame with keyboard
 void keyReleased(){
   if(key == 's'){
-    saveFrame("caleiduino-####.png");
- }
+    record = true;
+    println("saved frame");
+  }
 }
