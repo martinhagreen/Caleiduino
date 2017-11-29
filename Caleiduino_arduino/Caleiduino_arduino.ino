@@ -26,11 +26,19 @@ bool staticX, staticY, staticZ;
 int active;
 //variables to store color components
 int red,  blue, green;
+//variables to store init values for calibration
+int initX, initY, initZ;
 
 void setup(void) {
   Serial.begin(9600);
   TFTscreen.begin();
   TFTscreen.background(0,0,0);
+  //init calibration
+  initX = analogRead(xPin);
+  initY = analogRead(yPin);
+  initZ = analogRead(zPin); 
+
+  
   // pinMode(4, OUTPUT);
 }
 
@@ -93,25 +101,26 @@ void loop() {
 
 
   //Check if caleiduino is in vertical & static position 
-  if(valX == 33 || valX == 34 || valX == 35){
+  if(initX == sensorValue1 || initX-1 == sensorValue1 || initX+1 == sensorValue1){
      staticX = true;
   } else {
      staticX = false;
   }
 
-  if(valY == 80 || valY == 81){
+if(initY == sensorValue2 || initY-1 == sensorValue2 || initY+1 == sensorValue2){
      staticY = true;
   } else {
-    staticY = false;
+     staticY = false;
   }
 
-  if(valZ== 80 || valZ == 81){
+  
+if(initZ == sensorValue3 || initZ-1 == sensorValue3 || initZ+1 == sensorValue3){
      staticZ = true;
   } else {
-    staticZ = false;
+     staticZ = false;
   }
-  //Keep screen black if its vertical and static
 
+  //Keep screen black if its vertical and static
   if(staticX == true && staticY == true && staticZ == true){
     TFTscreen.background(0,0,0);
     active = 0;
